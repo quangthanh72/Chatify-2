@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsString,
@@ -25,7 +25,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastname: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
   dob: Date;
 }

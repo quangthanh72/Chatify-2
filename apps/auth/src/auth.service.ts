@@ -11,25 +11,17 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async generateAccessToken(user: UsersDocument) {
+  async login(user: UsersDocument) {
     const tokenPayload: TokenPayload = {
       userId: user._id.toHexString(),
     };
-    return {
-      accessToken: this.jwtService.sign(tokenPayload, {
-        secret: this.configService.get('JWT_SECRET'),
-      }),
-    };
-  }
 
-  async genarateRefreshToken(user: UsersDocument) {
-    const tokenPayload: TokenPayload = {
-      userId: user._id.toHexString(),
-    };
+    const token = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+
     return {
-      refreshToken: this.jwtService.sign(tokenPayload, {
-        secret: this.configService.get('JWTSECRET'),
-      }),
+      access_token: token,
     };
   }
 }

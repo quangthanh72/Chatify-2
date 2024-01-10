@@ -1,22 +1,41 @@
-import { Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Response } from 'express';
+import { SignInDto } from './users/dto/sign-in.dto';
+import { UsersService } from './users/users.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('/api/v1')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Request() req: any, @Res() res: Response) {
-    const { user } = req;
-    const accessToken = await this.authService.generateAccessToken(user);
-    const refreshToken = await this.authService.genarateRefreshToken(user);
+  async login(@Body() signInDto: SignInDto) {
+    const { email, password } = signInDto;
 
-    res.setHeader('Authorization', `Bearer ${accessToken.accessToken}`);
-    res.setHeader('Refresh-Token', refreshToken.refreshToken);
+    const user = await this.userService.validateUser(email, password);
 
-    return res.status(200).send({ message: 'Login successful' });
+    return this.authService.login(user);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Res() res: Response) {
+    res.setHeader('Authorization', null);
+    res.setHeader('Refresh-Token', null);
+
+    return res.status(200).send({ message: 'Logout successful' });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @MessagePattern('authenticate')
+  async authenticate(@Payload() data: any) {
+    return data.user;
   }
 }

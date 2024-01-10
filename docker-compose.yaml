@@ -12,6 +12,18 @@ services:
       - '3001:3001'
     volumes:
       - .:/usr/src/app
+  box-chat:
+    build: 
+      context: .
+      dockerfile: ./apps/box-chat/Dockerfile
+      target: development
+    command: pnpm run start:dev box-chat
+    env_file:
+      - ./apps/box-chat/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
   mongo:
     image: mongo
     ports:

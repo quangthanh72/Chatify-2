@@ -26,6 +26,15 @@
         "tsConfigPath": "apps/chatify-2/tsconfig.app.json"
       }
     },
+    "box-chat": {
+      "type": "application",
+      "root": "apps/box-chat",
+      "entryFile": "main",
+      "sourceRoot": "apps/box-chat/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/box-chat/tsconfig.app.json"
+      }
+    },
     "auth": {
       "type": "application",
       "root": "apps/auth",
@@ -35,13 +44,13 @@
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
-    "box-chat": {
+    "notifications": {
       "type": "application",
-      "root": "apps/box-chat",
+      "root": "apps/notifications",
       "entryFile": "main",
-      "sourceRoot": "apps/box-chat/src",
+      "sourceRoot": "apps/notifications/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/box-chat/tsconfig.app.json"
+        "tsConfigPath": "apps/notifications/tsconfig.app.json"
       }
     }
   },
