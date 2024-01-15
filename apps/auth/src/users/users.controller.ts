@@ -45,4 +45,9 @@ export class UsersController {
   ) {
     return this.userService.updateUserDto(user, updateUserDto);
   }
+
+  @Get('test')
+  async GetAll() {
+    return this.userService.getAllUser();
+  }
 }

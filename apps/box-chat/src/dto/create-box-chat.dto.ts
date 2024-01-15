@@ -1,12 +1,16 @@
-import { IsDate, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateBoxChatDto {
   @IsString()
   name: string;
 
-  @IsString()
-  creator: string;
+  creator: Types.ObjectId;
 
-  @IsDate()
+  @IsDateString()
   createAt: Date;
+
+  memberId: [Types.ObjectId];
+
+  messageId: [string];
 }
