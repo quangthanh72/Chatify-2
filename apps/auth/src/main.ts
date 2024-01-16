@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ConfigService } from '@nestjs/config';
-import { Transport } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -18,6 +18,12 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const configService = app.get(ConfigService);
+
+  const USER = configService.get('RABBITMQ_USER');
+  const PASSWORD = configService.get('RABBITMQ_PASS');
+  const HOST = configService.get('RABBITMQ_HOST');
+  const QUEUE = configService.get('RABBITMQ_AUTH_QUEUE');
+
   app.connectMicroservice({
     transport: Transport.TCP,
     options: {

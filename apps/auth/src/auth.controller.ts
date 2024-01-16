@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { SignInDto } from './users/dto/sign-in.dto';
 import { UsersService } from './users/users.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Ctx, MessagePattern, RmqContext } from '@nestjs/microservices';
 
 @Controller('/api/v1')
 export class AuthController {
@@ -34,8 +34,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @MessagePattern('authenticate')
-  async authenticate(@Payload() data: any) {
-    return data.user;
+  @MessagePattern({ cmd: 'authenticate' })
+  async authenticate(@Ctx() context: RmqContext) {
+    return context;
   }
 }

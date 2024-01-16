@@ -21,10 +21,11 @@ export class JwtAuthGuard implements CanActivate {
     if (!jwt) {
       return false;
     }
-    return this.authClient
-      .send<UserDto>('authenticate', {
-        jwt: jwt,
-      })
-      .pipe(timeout(5000));
+    //   return this.authClient
+    //     .send<UserDto>('authenticate', {
+    //       jwt: jwt,
+    //     })
+    //     .pipe(timeout(5000));
+    // }
   }
 }

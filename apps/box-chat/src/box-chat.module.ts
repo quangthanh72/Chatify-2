@@ -5,7 +5,7 @@ import { MessagesModule } from './messages/messages.module';
 import { BoxChatRepository } from './box-chat.repository';
 import { BoxChatDocument, BoxChatSchema } from './models/box-chat.schema';
 import { AUTH_SERVICE, DatabaseModule, LoggerModule } from '@app/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
@@ -26,17 +26,17 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         AUTH_PORT: Joi.string().required(),
       }),
     }),
-    ClientsModule.registerAsync([
+    ClientsModule.register([
       {
         name: AUTH_SERVICE,
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: 'cats_queue',
+          queueOptions: {
+            durable: false,
           },
-        }),
-        inject: [ConfigService],
+        },
       },
     ]),
   ],
