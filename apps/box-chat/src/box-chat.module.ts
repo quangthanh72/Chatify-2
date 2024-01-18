@@ -5,7 +5,7 @@ import { MessagesModule } from './messages/messages.module';
 import { BoxChatRepository } from './box-chat.repository';
 import { BoxChatDocument, BoxChatSchema } from './models/box-chat.schema';
 import { AUTH_SERVICE, DatabaseModule, LoggerModule } from '@app/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
@@ -26,17 +26,27 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         AUTH_PORT: Joi.string().required(),
       }),
     }),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'cats_queue',
-          queueOptions: {
-            durable: false,
-          },
+        useFactory: (configService: ConfigService) => {
+          const user = configService.get('RABBITMQ_USER');
+          const password = configService.get('RABBITMQ_PASS');
+          const host = configService.get('RABBITMQ_HOST');
+          const queueName = configService.get('RABBITMQ_AUTH_QUEUE');
+
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: [`amqp://${user}:${password}@${host}`],
+              queue: queueName,
+              queueOptions: {
+                durable: false,
+              },
+            },
+          };
         },
+        inject: [ConfigService],
       },
     ]),
   ],

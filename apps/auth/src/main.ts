@@ -5,6 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -19,18 +20,22 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const USER = configService.get('RABBITMQ_USER');
-  const PASSWORD = configService.get('RABBITMQ_PASS');
-  const HOST = configService.get('RABBITMQ_HOST');
-  const QUEUE = configService.get('RABBITMQ_AUTH_QUEUE');
+  const user = configService.get('RABBITMQ_USER');
+  const password = configService.get('RABBITMQ_PASS');
+  const host = configService.get('RABBITMQ_HOST');
+  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
 
-  app.connectMicroservice({
-    transport: Transport.TCP,
+  await app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
     options: {
-      host: '0.0.0.0',
-      port: configService.get('TCP_PORT'),
+      urls: [`amqp://${user}:${password}@${host}`],
+      queue: queueName,
+      queueOptions: {
+        durable: true,
+      },
     },
   });
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useLogger(app.get(Logger));
   await app.startAllMicroservices();

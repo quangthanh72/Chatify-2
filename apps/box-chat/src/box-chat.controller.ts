@@ -15,6 +15,6 @@ export class BoxChatController {
     @CurrentUser() user: UserDto,
     @Param('userid') otherId: Types.ObjectId,
   ) {
-    this.boxChatService.create(createBoxChatDto, user, otherId);
+    return this.boxChatService.create(createBoxChatDto, user, otherId);
   }
 }
