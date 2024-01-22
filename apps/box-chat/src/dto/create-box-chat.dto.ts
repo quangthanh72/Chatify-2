@@ -10,7 +10,7 @@ export class CreateBoxChatDto {
   @IsDateString()
   createAt: Date;
 
-  memberId: [Types.ObjectId];
+  memberId: Types.ObjectId[];
 
-  messageId: [string];
+  messageId: string[];
 }

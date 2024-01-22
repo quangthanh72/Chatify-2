@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { BoxChatService } from './box-chat.service';
 import { CreateBoxChatDto } from './dto/create-box-chat.dto';
 import { CurrentUser, JwtAuthGuard, UserDto } from '@app/common';
@@ -16,5 +16,29 @@ export class BoxChatController {
     @Param('userid') otherId: Types.ObjectId,
   ) {
     return this.boxChatService.create(createBoxChatDto, user, otherId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search/:name')
+  async findBox(@Param('name') name: string) {
+    return this.boxChatService.findWithName(name);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('test2/:id')
+  async getUser(@Param('id') _id: any) {
+    return this.boxChatService.getUser(_id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('testing')
+  async getBoxChat(@CurrentUser() user: UserDto) {
+    return this.boxChatService.findAll(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('ok/:otherId')
+  async findId(@CurrentUser() user: UserDto, @Param('otherId') otherId: any) {
+    return this.boxChatService.findId(user, otherId);
   }
 }

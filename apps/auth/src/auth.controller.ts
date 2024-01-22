@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CurrentUser } from '@app/common';
 import { UsersDocument } from './users/models/users.schema';
+import { GetUserDto } from './users/dto/get-user.dto';
 
 @Controller('/api/v1')
 export class AuthController {
@@ -31,5 +32,11 @@ export class AuthController {
   @MessagePattern('authenticate')
   async authenticate(@Payload() data: any) {
     return data.user;
+  }
+
+  @MessagePattern({ cmd: 'get-user' })
+  async getUser(@Payload() _id: GetUserDto) {
+    console.log('wooooooooooooooooooooooooooooooooooooooooooooooooooooo');
+    return this.userService.getUser(_id);
   }
 }

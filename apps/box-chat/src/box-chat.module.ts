@@ -29,23 +29,13 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
-        useFactory: (configService: ConfigService) => {
-          const user = configService.get('RABBITMQ_USER');
-          const password = configService.get('RABBITMQ_PASS');
-          const host = configService.get('RABBITMQ_HOST');
-          const queueName = configService.get('RABBITMQ_AUTH_QUEUE');
-
-          return {
-            transport: Transport.RMQ,
-            options: {
-              urls: [`amqp://${user}:${password}@${host}`],
-              queue: queueName,
-              queueOptions: {
-                durable: false,
-              },
-            },
-          };
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('AUTH_HOST'),
+            port: configService.get('AUTH_PORT'),
+          },
+        }),
         inject: [ConfigService],
       },
     ]),

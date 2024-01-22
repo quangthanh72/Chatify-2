@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ConfigService } from '@nestjs/config';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -20,19 +20,11 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const user = configService.get('RABBITMQ_USER');
-  const password = configService.get('RABBITMQ_PASS');
-  const host = configService.get('RABBITMQ_HOST');
-  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
-
-  await app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
+  app.connectMicroservice({
+    transport: Transport.TCP,
     options: {
-      urls: [`amqp://${user}:${password}@${host}`],
-      queue: queueName,
-      queueOptions: {
-        durable: true,
-      },
+      host: '0.0.0.0',
+      port: configService.get('TCP_PORT'),
     },
   });
   app.use(cookieParser());
