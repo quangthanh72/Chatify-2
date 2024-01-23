@@ -8,6 +8,7 @@ import { AUTH_SERVICE, DatabaseModule, LoggerModule } from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MessagesService } from './messages/messages.service';
 
 @Module({
   imports: [
@@ -41,6 +42,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [BoxChatController],
-  providers: [BoxChatService, BoxChatRepository, BoxChatDocument],
+  providers: [
+    BoxChatService,
+    BoxChatRepository,
+    BoxChatDocument,
+    MessagesService,
+  ],
 })
 export class BoxChatModule {}

@@ -3,6 +3,7 @@ import { BoxChatService } from './box-chat.service';
 import { CreateBoxChatDto } from './dto/create-box-chat.dto';
 import { CurrentUser, JwtAuthGuard, UserDto } from '@app/common';
 import { Types } from 'mongoose';
+import { CreateMessageDto } from './messages/dto/create-message.dto';
 
 @Controller('api/v1/boxchat')
 export class BoxChatController {
@@ -40,5 +41,15 @@ export class BoxChatController {
   @Get('ok/:otherId')
   async findId(@CurrentUser() user: UserDto, @Param('otherId') otherId: any) {
     return this.boxChatService.findId(user, otherId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('send/:boxChatId')
+  async sendMessage(
+    @Param('boxChatId') boxChatId: any,
+    @Body() createMessageDto: CreateMessageDto,
+    @CurrentUser() user: UserDto,
+  ) {
+    return this.boxChatService.sendMessage(boxChatId, createMessageDto, user);
   }
 }

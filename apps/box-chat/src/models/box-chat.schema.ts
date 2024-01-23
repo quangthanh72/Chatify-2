@@ -9,7 +9,7 @@ export class BoxChatDocument extends AbstractDocument {
   name: string | any;
 
   @Prop()
-  messageId: string[];
+  messageId: MessageId[];
 
   @Prop()
   creator: Types.ObjectId;
@@ -18,6 +18,11 @@ export class BoxChatDocument extends AbstractDocument {
   memberId: Types.ObjectId[];
 
   @Prop()
+  createAt: Date;
+}
+
+export class MessageId {
+  messageId: string;
   createAt: Date;
 }
 
